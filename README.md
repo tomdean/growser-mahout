@@ -17,7 +17,7 @@ mvn exec:java -Dsrc=... -Dout=... -Drepos=... -DnumRepos=... -DbatchSize=...
 ```
 
 |Property|Optional|Description|
-|--------|-----------|
+|--------|--------|-----------|
 |**src**|No|A CSV file with GitHub events (repo_id, login_id, event, timestamp)|
 |**out**|No|Save recommendations to this file (compressed).|
 |**repos**|No|A CSV file (pre-sorted) to use for repository IDs (first field).|

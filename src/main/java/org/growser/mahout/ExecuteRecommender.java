@@ -9,19 +9,13 @@ import java.io.IOException;
 
 public class ExecuteRecommender {
     public static void main(String[] args) {
-
         Logger log = LoggerFactory.getLogger("org.growser.mahout");
 
-        if (args.length != 5) {
-            log.error("ExecuteRecommender requires four parameters");
-            return;
-        }
-
-        String dataModelPath = args[0];
-        String destinationPath = args[1];
-        String repositoriesPath = args[2];
-        int numRepos = Integer.parseInt(args[3]);
-        int batchSize = Integer.parseInt(args[4]);
+        String dataModelPath = System.getProperty("src");
+        String destinationPath = System.getProperty("out");
+        String repositoriesPath = System.getProperty("repos");
+        int numRepos = Integer.parseInt(System.getProperty("numRepos", "10000"));
+        int batchSize = Integer.parseInt(System.getProperty("batchSize", "100"));
 
         Recommender recommender;
         try {

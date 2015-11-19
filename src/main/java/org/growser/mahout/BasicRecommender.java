@@ -40,29 +40,24 @@ public final class BasicRecommender {
         int currentOffset = 0;
         while (currentOffset < repositories.length) {
             int endOffset = Math.min(currentOffset + batchSize, repositories.length);
-
             log.info("Processing batch {} to {}", currentOffset, endOffset);
-            int[] batch = Arrays.copyOfRange(repositories, currentOffset, endOffset);
-            long start = System.currentTimeMillis();
-            int total = writeRecommendationBatch(batch);
-            long timeElapsed = (System.currentTimeMillis() - start) / 1000;
-            log.info("Recommendations: {} in {} seconds", total, timeElapsed);
-
+            try {
+                int[] batch = Arrays.copyOfRange(repositories, currentOffset, endOffset);
+                writeRecommendationBatch(batch);
+            } catch (IOException ex) {
+                log.error("Failed to process batch {} to {} ({})", currentOffset, endOffset, ex.getMessage());
+            }
             currentOffset += batchSize;
         }
     }
 
-    private int writeRecommendationBatch(int[] ids) {
+    private int writeRecommendationBatch(int[] ids) throws IOException {
         int total = 0;
         List<RecommenderResult> results = fetchBatch(ids);
         for (RecommenderResult result : results) {
             total += result.numResults();
             for (RecommendedItem item : result.getResults()) {
-                try {
-                    writer.write(result.getItemId(), item);
-                } catch (IOException ex) {
-                    log.debug("Unable to write recommendation for {},{}", result.getItemId(), item);
-                }
+                writer.write(result.getItemId(), item);
             }
         }
         return total;
